@@ -1,0 +1,70 @@
+---
+layout: commentable
+title: Samples
+---
+<script type="text/javascript">
+var WA;
+var sid = location.search.substr(1).replace(/\//g,''), data = GetData(), dlbase = 'https://github.com/schellingb/ZillaLibSamples/releases/download/bin/';
+(data[sid] ? Run(sid, data[sid]) : Index());
+
+function Index()
+{
+	var r = '<h2>WAjic Samples</h2><table><tr><th>Title (click to run)</th><th>Description</th></tr>';
+	for (var i in data)
+	{
+		r += '<tr><td><a href="?'+i+'"><b>'+data[i].name+'</b></a></td><td>'+data[i].desc+'</td></tr>';
+	}
+	r += '</table>';
+	document.currentScript.outerHTML = r;
+}
+
+function Run(id, data)
+{
+	document.write('<h2>' + 'Sample - ' + data.name + ' (<a href="/samples/' + '">&larr; show all samples</a>)</h2><article>'
+		+'<div style="text-align:center">Source code is shown <a href="#source">Below</a></div>'
+		+'<hr style="margin:15px">'
+		+'<h2 id="wa_status" style="text-align:center;margin:0">Status: Loading...</h2>'
+		+'<canvas id="wa_canvas" style="display:block;margin:0 auto;width:80%;max-width:80%" oncontextmenu="event.preventDefault()" height="0"></canvas>'
+		+'<div id="wa_log"></div>'
+		+'<hr style="margin:15px">'
+		+'<a name="source"></a>'
+		+'<p style="margin:20px 0 -5px 0px; font-size:67%">File: <a href="' + id + '.wasm">' + id + '.wasm</a> - Source: <a href="https://github.com/schellingb/wajic/blob/master/samples/' + id + data.src + '">https://github.com/schellingb/wajic/blob/master/samples/' + id + data.src + '</a></p>'
+		+'<pre id="wa_source" style="background:#1c253e;overflow:auto;font-size:67%;border:3px solid #5f82bd;padding:5px"></pre>'
+		+'<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/googlearchive/code-prettify@master/styles/desert.css">'
+		+'<script defer src="https://cdn.jsdelivr.net/gh/googlearchive/code-prettify@master/loader/prettify.js"></'+'script>'
+		+'<script defer src="https://schellingb.github.io/wajic/wajic.js"></'+'script></article>');
+
+	WA = {
+		module: id + '.wasm',
+		canvas: document.getElementById('wa_canvas'),
+		print: text => document.getElementById('wa_log').innerHTML += text.replace(/\n/g, '<br>'),
+		error: (code, msg) => WA.print('ERROR: ' + code + ' - ' + msg + '\n'),
+		started: () => { document.getElementById('wa_status').outerHTML = ''; },
+	};
+
+	window.addEventListener('DOMContentLoaded',function()
+	{
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', 'https://raw.githubusercontent.com/schellingb/wajic/master/samples/' + id + data.src, true);
+		xhr.onload = () => document.getElementById('wa_source').innerHTML = prettyPrintOne(xhr.response.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/[\s\S]*?unlicense.org[\s\S]*\*\/\s*/,''), 'cpp');
+		xhr.send();
+	});
+}
+
+function GetData()
+{
+	return {
+		Basic:         { 'src': '.c',   'name': 'Pure C function',         'desc': 'Running minimal C functions' },
+		LibC:          { 'src': '.c',   'name': 'With C Standard Library', 'desc': 'Using standard library functions like printf' },
+		Cpp:           { 'src': '.cpp', 'name': 'With C++',                'desc': 'Using C++ std library features' },
+		WebGL:         { 'src': '.c',   'name': 'WebGL rendering',         'desc': 'GPU accelerated 2D and 3D graphics' },
+		Audio:         { 'src': '.cpp', 'name': 'Audio output',            'desc': 'Generating audio data from C' },
+		EmbedFile:     { 'src': '.cpp', 'name': 'File embedding',          'desc': 'Embedding binary files into WASM' },
+		LoadUrl:       { 'src': '.cpp', 'name': 'Loading a URL',           'desc': 'Loading data from an external URL' },
+		Input:         { 'src': '.c',   'name': 'Input events',            'desc': 'Processing input events from keyboard/mouse' },
+		SharedInit:    { 'src': '.c',   'name': 'Shared Init Code Block',  'desc': 'Sharing functionality/variables between WAJIC functions' },
+		sokol_texcube: { 'src': '.c',   'name': 'Sokol TexCube',           'desc': 'TexCube sample using <a href="https://github.com/floooh/sokol" target="_blank">sokol_gfx.h</a>' },
+		sokol_imgui:   { 'src': '.cpp', 'name': 'Sokol Imgui',             'desc': 'Imgui sample using <a href="https://github.com/floooh/sokol" target="_blank">sokol_gfx.h</a>' },
+	};
+}
+</script>

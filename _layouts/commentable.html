@@ -1,0 +1,43 @@
+---
+layout: default
+---
+
+<div class="main-content">
+
+<div class="module color-5">
+{{ content }}
+</div>
+
+<div class="module color-5">
+	<script type="text/javascript">(()=>{
+		var page = 1;
+		document.currentScript.outerHTML = '<div id="comments_thread"></div><div id="comments_btn"><button id="comments_show">Show GitHub comments</button><a href="https://gist.github.com/7b3e35408b23c5ca2bacd43a6d73d47c#comments" target="_blank"><button>Add Comment</button></a></div>';
+		document.getElementById('comments_show').onclick = () =>
+		{
+			var haveMore = false;
+			fetch('https://api.github.com/gists/7b3e35408b23c5ca2bacd43a6d73d47c/comments?page='+(page++),{headers:{accept:'application/vnd.github.v3.html+json'}}).then(r => { haveMore = (r.headers.get("Link")||'').includes('next'); return r.text() }).then(r =>
+			{
+				var t = '';
+				JSON.parse(r).forEach(r =>
+				{
+					t += "<div id='gh-comment'><div id='gh-author'>";
+					t += "<img src='" + r.user.avatar_url + "' id='gh-avatar'>";
+					t += "<b><a href='" + r.user.html_url + "'>" + r.user.login + "</a></b>";
+					t += " posted at ";
+					t += "<em>" + new Date(r.created_at).toUTCString() + "</em>";
+					t += "</div>";
+					t += r.body_html;
+					t += "</div>";
+				});
+				document.getElementById('comments_thread').innerHTML = t;
+				document.getElementById('comments_thread').style.display = "block";
+				var btn = document.getElementById('comments_show')
+				if (!haveMore) btn.parentElement.removeChild(btn);
+				else btn.innerHTML = 'Load more comments';
+			});
+		};
+		})();
+	</script>
+</div>
+
+</div>

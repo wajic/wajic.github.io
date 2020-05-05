@@ -1,0 +1,8 @@
+name: WAjic
+description: "WebAssembly JavaScript Interface Creator"
+markdown: kramdown
+paginate: 5
+permalink: /:title
+rss-feed-limit: 10
+rss-show-full: "no"
+with_toc_data: true
