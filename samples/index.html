@@ -4,7 +4,7 @@ title: Samples
 ---
 <script type="text/javascript">
 var WA;
-var sid = location.search.substr(1).replace(/\//g,''), data = GetData(), dlbase = 'https://github.com/schellingb/ZillaLibSamples/releases/download/bin/';
+var sid = location.search.substr(1).replace(/\//g,''), data = GetData();
 (data[sid] ? Run(sid, data[sid]) : Index());
 
 function Index()
@@ -63,6 +63,7 @@ function GetData()
 		LoadUrl:       { 'src': '.cpp', 'name': 'Loading a URL',           'desc': 'Loading data from an external URL' },
 		Input:         { 'src': '.c',   'name': 'Input events',            'desc': 'Processing input events from keyboard/mouse' },
 		SharedInit:    { 'src': '.c',   'name': 'Shared Init Code Block',  'desc': 'Sharing functionality/variables between WAJIC functions' },
+		Coroutine:     { 'src': '.c',   'name': 'Coroutines',              'desc': 'Coroutine and program suspending (sleeping)' },
 		sokol_texcube: { 'src': '.c',   'name': 'Sokol TexCube',           'desc': 'TexCube sample using <a href="https://github.com/floooh/sokol" target="_blank">sokol_gfx.h</a>' },
 		sokol_imgui:   { 'src': '.cpp', 'name': 'Sokol Imgui',             'desc': 'Imgui sample using <a href="https://github.com/floooh/sokol" target="_blank">sokol_gfx.h</a>' },
 	};
